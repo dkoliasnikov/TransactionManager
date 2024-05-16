@@ -1,4 +1,5 @@
 ﻿using Domain.Abstractions;
+using Domain.CQRS.Abstractions;
 
 namespace Domain.Services;
 
@@ -25,4 +26,9 @@ internal class TransactionManager : ITransactionManager
 			}
 		}
 	}
+
+	private IUserRequest GetRequest
 }
+
+
+

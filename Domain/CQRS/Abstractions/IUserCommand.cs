@@ -1,3 +1,3 @@
 ﻿namespace Domain.CQRS.Abstractions;
 
-internal interface IUserCommand { }
+internal interface IUserCommand : IUserRequest { }

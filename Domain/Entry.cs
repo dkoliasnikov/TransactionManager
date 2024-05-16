@@ -1,6 +1,8 @@
 ﻿using Autofac;
 using Domain.Abstractions;
 using Domain.Comands.Handlers;
+using Domain.CQRS.Abstractions;
+using Domain.CQRS.Handlers;
 using Domain.Enums;
 using Domain.Services;
 
@@ -19,6 +21,8 @@ public static class Entry
 
 		builder.RegisterType<GetTransactionQueryHandler>().As<IGetTransactionQueryHandler>()
 			.WithParameter("notFoundBehavior", notFoundBehavior);
+
+		builder.RegisterType<ExitCommandHandler>().As<IExitCommand>();
 
 		return builder;
 	}
