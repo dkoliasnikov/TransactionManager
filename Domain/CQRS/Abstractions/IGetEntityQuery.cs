@@ -1,7 +1,7 @@
-﻿namespace Domain.Comands;
+﻿namespace Domain.CQRS.Abstractions;
 
-internal interface IGetEntityQuery<EntityT> : CQRS.Abstractions.IUserQuery
+internal interface IGetEntityQuery<EntityT> : IUserQuery
 {
-	/// <exception cref="EntityNotFoundException"></exception>
-	Task<EntityT?> GetAsync(int id);
+    /// <exception cref="EntityNotFoundException"></exception>
+    Task<EntityT?> GetAsync(int id);
 }

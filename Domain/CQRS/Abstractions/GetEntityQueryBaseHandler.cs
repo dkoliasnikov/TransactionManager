@@ -2,10 +2,10 @@
 using Domain.Enums;
 using Domain.Exceptions;
 
-namespace Domain.Comands.Handlers;
+namespace Domain.CQRS.Abstractions;
 
-abstract internal class GetEntityQueryBaseHandler<EntityT, RepositoryT> : IGetEntityQuery<EntityT>, IGetTransactionQueryHandler
-		where RepositoryT : IRepository<EntityT>
+abstract internal class GetEntityQueryBaseHandler<EntityT, RepositoryT> : IGetEntityQuery<EntityT>
+        where RepositoryT : IRepository<EntityT>
 {
     private readonly EnityNotFoundBehavior _notFoundBehavior = EnityNotFoundBehavior.PropagateException;
 

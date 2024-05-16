@@ -27,7 +27,7 @@ internal class TransactionManager : ITransactionManager
 		}
 	}
 
-	private IUserRequest GetRequest
+
 }
 
 

@@ -1,3 +1,10 @@
-﻿namespace Domain.Models;
+﻿using Domain.Abstractions;
 
-public record Transaction (int Id, DateTime TransactionDate, decimal Amount);
+namespace Domain.Models;
+
+public class Transaction : IHaveId
+{
+	public int Id { get; set; }
+	public DateTime TransactionDate { get; set; }
+	public decimal Amount { get; set; }
+}

@@ -1,3 +1,3 @@
-﻿namespace Domain.Comands.Handlers;
+﻿namespace Domain.CQRS.Abstractions;
 
-internal interface IGetTransactionQueryHandler {}
+internal interface IGetTransactionQueryHandler { }

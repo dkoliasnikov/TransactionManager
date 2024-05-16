@@ -2,4 +2,4 @@
 
 namespace Domain.Abstractions;
 
-internal interface ITransactionRepository : IRepository<Transaction> { }
+public interface ITransactionRepository : IRepository<Transaction> { }

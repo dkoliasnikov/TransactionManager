@@ -1,13 +1,14 @@
 ﻿using Domain.Abstractions;
+using Domain.CQRS.Abstractions;
 using Domain.Enums;
 using Domain.Models;
 
-namespace Domain.Comands.Handlers;
+namespace Domain.CQRS.Handlers;
 
-internal class AddOrUpdateTransactionCommandHandler 
-	: AddOrUpdateEntityCommandBaseHandler<Transaction, ITransactionRepository>, IAddOrUpdateTransactionCommandHandler
+internal class AddOrUpdateTransactionCommandHandler
+    : AddOrUpdateEntityCommandBaseHandler<Transaction, ITransactionRepository>, IAddOrUpdateTransactionCommandHandler
 {
-	public AddOrUpdateTransactionCommandHandler(ITransactionRepository transactionRepository, EntityAlreadyExistsBehavior alreadyExistsBehavior, EnityNotFoundBehavior notFoundBehavior) : base(transactionRepository, alreadyExistsBehavior, notFoundBehavior)
-	{
-	}
+    public AddOrUpdateTransactionCommandHandler(ITransactionRepository transactionRepository, EntityAlreadyExistsBehavior alreadyExistsBehavior, EnityNotFoundBehavior notFoundBehavior) : base(transactionRepository, alreadyExistsBehavior, notFoundBehavior)
+    {
+    }
 }

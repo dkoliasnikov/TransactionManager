@@ -1,9 +1,8 @@
 ﻿using Domain.Abstractions;
-using Domain.CQRS.Abstractions;
 using Domain.Enums;
 using Domain.Exceptions;
 
-namespace Domain.Comands.Handlers;
+namespace Domain.CQRS.Abstractions;
 
 abstract internal class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT> : IAddEntityCommand<EntityT>
         where RepositoryT : IRepository<EntityT>
@@ -11,10 +10,10 @@ abstract internal class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT
     private readonly EntityAlreadyExistsBehavior _alreadyExistsBehavior = EntityAlreadyExistsBehavior.PropagateException;
 
     private readonly EnityNotFoundBehavior _notFoundBehavior = EnityNotFoundBehavior.PropagateException;
-	
+
     private readonly RepositoryT _repository;
 
-	public AddOrUpdateEntityCommandBaseHandler(RepositoryT repository, EntityAlreadyExistsBehavior alreadyExistsBehavior, EnityNotFoundBehavior notFoundBehavior)
+    public AddOrUpdateEntityCommandBaseHandler(RepositoryT repository, EntityAlreadyExistsBehavior alreadyExistsBehavior, EnityNotFoundBehavior notFoundBehavior)
     {
         _repository = repository;
         _alreadyExistsBehavior = alreadyExistsBehavior;
