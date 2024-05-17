@@ -16,14 +16,18 @@ internal class TransactionManager : ITransactionManager
 
 	private readonly ILifetimeScope _scope;
 
-	public TransactionManager(ILifetimeScope scope)
+	private readonly IInputFetcher _inputFetcher;
+	private readonly IOutputPrinter _outputPrinter;
+
+	public TransactionManager(ILifetimeScope scope, IInputFetcher userInputFetcher, IOutputPrinter outputPrinter)
 	{
 		_scope = scope;
-		
+		_inputFetcher = userInputFetcher;
+
 		_handlersMap = new()
 			{
 				{
-					typeof(IGetTransactionQueryHandler), async (parameter) => Console.WriteLine(JsonSerializer.Serialize(await _scope.Resolve<IGetTransactionQueryHandler>().GetAsync(parameter as IGetTransactionParameter)))
+					typeof(IGetTransactionQueryHandler), async (parameter) => outputPrinter.WriteLine(JsonSerializer.Serialize(await _scope.Resolve<IGetTransactionQueryHandler>().GetAsync(parameter as IGetTransactionParameter)))
 				},
 				{
 					typeof(IAddOrUpdateTransactionCommandHandler), (parameter) => _scope.Resolve<IAddOrUpdateTransactionCommandHandler>().Handle(parameter as IAddTransactionParameter)
@@ -33,6 +37,7 @@ internal class TransactionManager : ITransactionManager
 					typeof(IExitCommand), (parameter) => _scope.Resolve<IExitCommand>().Handle(parameter as ExitAppParameter)
 				}
 			};
+		_outputPrinter = outputPrinter;
 	}
 
 
@@ -42,8 +47,8 @@ internal class TransactionManager : ITransactionManager
 		{
 			try
 			{
-				Console.WriteLine("Введите команду ");
-				var command = Console.ReadLine();
+				_outputPrinter.WriteLine("Введите команду ");
+				var command = _inputFetcher.FetchNext();
 				Type? request = null;
 				IParameter? parameter = null;
 
@@ -58,11 +63,11 @@ internal class TransactionManager : ITransactionManager
 					case "get":
 						while (true)
 						{
-							Console.Write("Введите id ");
-							var _successfullyParsedId = int.TryParse(Console.ReadLine(), out var _id);
+							_outputPrinter.Write("Введите id ");
+							var _successfullyParsedId = int.TryParse(_inputFetcher.FetchNext(), out var _id);
 							if (!_successfullyParsedId)
 							{
-								Console.WriteLine("Некорректное значение");
+								_outputPrinter.WriteLine("Некорректное значение");
 								continue;
 							}
 
@@ -75,27 +80,27 @@ internal class TransactionManager : ITransactionManager
 						break;
 
 					case "add":
-						Console.Write("Введите id ");
-						var successfullyParsedId = int.TryParse(Console.ReadLine(), out var id);
+						_outputPrinter.Write("Введите id ");
+						var successfullyParsedId = int.TryParse(_inputFetcher.FetchNext(), out var id);
 						if (!successfullyParsedId)
 						{
-							Console.WriteLine("Некорректное значение");
+							_outputPrinter.WriteLine("Некорректное значение");
 							continue;
 						}
 
-						Console.Write("Введите дату ");
-						var successfullyParsedDate = DateTime.TryParse(Console.ReadLine(), out var dateTime);
+						_outputPrinter.Write("Введите дату ");
+						var successfullyParsedDate = DateTime.TryParse(_inputFetcher.FetchNext(), out var dateTime);
 						if (!successfullyParsedDate)
 						{
-							Console.WriteLine("Некорректное значение");
+							_outputPrinter.WriteLine("Некорректное значение");
 							continue;
 						}
 
-						Console.Write("Введите сумму ");
-						var successfullyParsedAmount = int.TryParse(Console.ReadLine(), out var amount);
+						_outputPrinter.Write("Введите сумму ");
+						var successfullyParsedAmount = int.TryParse(_inputFetcher.FetchNext(), out var amount);
 						if (!successfullyParsedAmount)
 						{
-							Console.WriteLine("Некорректное значение");
+							_outputPrinter.WriteLine("Некорректное значение");
 							continue;
 						}
 
@@ -103,7 +108,7 @@ internal class TransactionManager : ITransactionManager
 						parameter = new AddTransactionParameter(new Transaction(id, dateTime, amount));
 						break;
 					default:
-						Console.WriteLine("Неизвестная команда");
+						_outputPrinter.WriteLine("Неизвестная команда");
 						break;
 				}
 
@@ -112,21 +117,21 @@ internal class TransactionManager : ITransactionManager
 					await _handlersMap[request].Invoke(parameter);
 					request = null;
 					parameter = null;
-					Console.WriteLine("[Ok]");
+					_outputPrinter.WriteLine("[Ok]");
 				}
 
 			}
 			catch (EntityNotFoundException ex)
 			{
-				Console.WriteLine("Transaction not found");
+				_outputPrinter.WriteLine("Transaction not found");
 			}
 			catch (EntityAlreadyExistsException ex)
 			{
-				Console.WriteLine("Transaction already exists");
+				_outputPrinter.WriteLine("Transaction already exists");
 			}
 			catch (Exception ex)
 			{
-				Console.WriteLine(ex.ToString());
+				_outputPrinter.WriteLine(ex.ToString());
 			}
 		}
 	}

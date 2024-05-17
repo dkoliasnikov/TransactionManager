@@ -2,11 +2,14 @@
 using Domain;
 using Domain.Abstractions;
 using InMemoryStorage;
+using Startup.Services;
 
 var builder = new ContainerBuilder();
 
 builder.AddDomain();
 builder.AddInMemoryStorage();
+builder.RegisterType<ConsoleInputFetcher>().As<IInputFetcher>();
+builder.RegisterType<ConsoleOutputPrinter>().As<IOutputPrinter>();
 
 try
 {
