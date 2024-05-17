@@ -12,34 +12,47 @@ namespace Domain.Services;
 
 internal class TransactionManager : ITransactionManager
 {
-	private readonly Dictionary<Type, Func<object, Task>> _handlersMap ;
-
+	private readonly Dictionary<Type, Func<object, Task>> _handlersFactory ;
+	private Dictionary<string, ParameterFactory> _parametersFactory;
 	private readonly ILifetimeScope _scope;
-
 	private readonly IInputFetcher _inputFetcher;
 	private readonly IOutputPrinter _outputPrinter;
+	private delegate bool ParserDelegate<T>(string input, out T output);
+	private record ParameterFactory(Func<IParameter> ParameterBuilder, Type CommandType);
 
 	public TransactionManager(ILifetimeScope scope, IInputFetcher userInputFetcher, IOutputPrinter outputPrinter)
 	{
 		_scope = scope;
 		_inputFetcher = userInputFetcher;
+		_outputPrinter = outputPrinter;
 
-		_handlersMap = new()
+		_handlersFactory = new()
 			{
 				{
-					typeof(IGetTransactionQueryHandler), async (parameter) => outputPrinter.WriteLine(JsonSerializer.Serialize(await _scope.Resolve<IGetTransactionQueryHandler>().GetAsync(parameter as IGetTransactionParameter)))
+					typeof(IGetTransactionQueryHandler), 
+					async (parameter) => outputPrinter.WriteLine(JsonSerializer.Serialize(await _scope.Resolve<IGetTransactionQueryHandler>().GetAsync(parameter as IGetTransactionParameter)))
 				},
 				{
-					typeof(IAddOrUpdateTransactionCommandHandler), (parameter) => _scope.Resolve<IAddOrUpdateTransactionCommandHandler>().Handle(parameter as IAddTransactionParameter)
-
+					typeof(IAddOrUpdateTransactionCommandHandler), 
+					(parameter) => _scope.Resolve<IAddOrUpdateTransactionCommandHandler>().Handle(parameter as IAddTransactionParameter)
 				},
 				{
-					typeof(IExitCommand), (parameter) => _scope.Resolve<IExitCommand>().Handle(parameter as ExitAppParameter)
+					typeof(IExitCommand), 
+					(parameter) => _scope.Resolve<IExitCommand>().Handle(parameter as ExitAppParameter)
 				}
 			};
-		_outputPrinter = outputPrinter;
-	}
 
+		_parametersFactory = new Dictionary<string, ParameterFactory>()
+				{
+					{ "exit",  new (() => new ExitAppParameter(), typeof(IExitCommand)) },
+					{ "get",   new (() => new GetTransactionParameter(FetchValue<int>("Введите id", int.TryParse)), typeof(IGetTransactionQueryHandler))},
+					{ "add",  new (() => new AddTransactionParameter(new Transaction(
+						FetchValue<int>("Введите id", int.TryParse),
+						FetchValue<DateTime>("Введите дату", DateTime.TryParse),
+						FetchValue<int>("Введите сумму", int.TryParse))), typeof(IAddOrUpdateTransactionCommandHandler))
+					}
+				};
+	}
 
 	public async Task Run()
 	{
@@ -48,87 +61,24 @@ internal class TransactionManager : ITransactionManager
 			try
 			{
 				_outputPrinter.WriteLine("Введите команду ");
-				var command = _inputFetcher.FetchNext().Trim().ToLower();
-				Type? request = null;
-				IParameter? parameter = null;
 
-				switch (command)
+				if(_parametersFactory.TryGetValue(_inputFetcher.FetchNext().Trim().ToLower(), out var builderWithCommand))
 				{
-					case "exit":
-						request = typeof(IExitCommand);
-						parameter = null;
-
-						break;
-
-					case "get":
-						while (true)
-						{
-							_outputPrinter.Write("Введите id ");
-							var _successfullyParsedId = int.TryParse(_inputFetcher.FetchNext(), out var _id);
-							if (!_successfullyParsedId)
-							{
-								_outputPrinter.WriteLine("Некорректное значение");
-								continue;
-							}
-
-							request = typeof(IGetTransactionQueryHandler);
-							parameter = new GetTransactionParameter(_id);
-
-							break;
-						}
-
-						break;
-
-					case "add":
-						_outputPrinter.Write("Введите id ");
-
-						var successfullyParsedId = int.TryParse(_inputFetcher.FetchNext(), out var id);
-						if (!successfullyParsedId)
-						{
-							_outputPrinter.WriteLine("Некорректное значение");
-							continue;
-						}
-
-						_outputPrinter.Write("Введите дату ");
-						var successfullyParsedDate = DateTime.TryParse(_inputFetcher.FetchNext(), out var dateTime);
-						if (!successfullyParsedDate)
-						{
-							_outputPrinter.WriteLine("Некорректное значение");
-							continue;
-						}
-
-						_outputPrinter.Write("Введите сумму ");
-						var successfullyParsedAmount = int.TryParse(_inputFetcher.FetchNext(), out var amount);
-						if (!successfullyParsedAmount)
-						{
-							_outputPrinter.WriteLine("Некорректное значение");
-							continue;
-						}
-
-						request = typeof(IAddOrUpdateTransactionCommandHandler);
-						parameter = new AddTransactionParameter(new Transaction(id, dateTime, amount));
-						break;
-					default:
-						_outputPrinter.WriteLine("Неизвестная команда");
-						break;
-				}
-
-				if (request is not null && parameter is not null)
-				{ 
-					await _handlersMap[request].Invoke(parameter);
-					request = null;
-					parameter = null;
+					await _handlersFactory[builderWithCommand.CommandType].Invoke(builderWithCommand.ParameterBuilder());
 					_outputPrinter.WriteLine("[Ok]");
 				}
-
+				else
+				{
+					_outputPrinter.WriteLine("Неизвестная команда");
+				}
 			}
 			catch (EntityNotFoundException ex)
 			{
-				_outputPrinter.WriteLine("Transaction not found");
+				_outputPrinter.WriteLine("Транзакция не найдена");
 			}
 			catch (EntityAlreadyExistsException ex)
 			{
-				_outputPrinter.WriteLine("Transaction already exists");
+				_outputPrinter.WriteLine("Транзакция уже существует");
 			}
 			catch (Exception ex)
 			{
@@ -136,7 +86,16 @@ internal class TransactionManager : ITransactionManager
 			}
 		}
 	}
+	
+	private T FetchValue<T>(string tag, ParserDelegate<T> parser )
+	{
+		_outputPrinter.Write($"{tag} ");
+		T value;
+		while (!parser.Invoke(_inputFetcher.FetchNext(), out value))
+		{
+			_outputPrinter.WriteLine("Некорректное значение");
+		}
+		
+		return value;
+	}
 }
-
-
-

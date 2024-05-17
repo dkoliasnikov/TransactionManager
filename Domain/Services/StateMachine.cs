@@ -1,32 +1,89 @@
-﻿namespace Domain.Services;
+﻿using Autofac;
+using Domain.Abstractions;
+using Generic.CQRS.Abstractions.Params.Abstractions;
+
+namespace Domain.Services;
 
 internal class StateMachine
 {
-	class Context
+	public class Context
 	{
-		public State State { get; set; }
-		public Context(State state)
+		private State _state { get; set; }
+
+		public readonly ILifetimeScope Scope;
+		public readonly IInputFetcher InputFetcher;
+		public readonly IOutputPrinter OutputPrinter;
+
+        public (Type Handler, IParameter Parameter)? Result { get; set; }
+
+        public Context(State state)
 		{
-			this.State = state;
+			_state = state;
 		}
+
+		public Context(State state, ILifetimeScope scope, IInputFetcher inputFetcher, IOutputPrinter outputPrinter) : this(state)
+		{
+			Scope = scope;
+			InputFetcher = inputFetcher;
+			OutputPrinter = outputPrinter;
+		}
+
 		public void Request()
 		{
-			this.State.Handle(this);
+			_state.Handle(this);
+		}
+
+		public void TransitionTo(State state)
+		{
+			_state = state;
+			_state.SetContext(this);
 		}
 	}
 
-	abstract class State
+	public class ExitCommandContext : Context
 	{
+		public ExitCommandContext(State state) : base(state)
+		{
+		}
+
+		public ExitCommandContext(State state, ILifetimeScope scope, IInputFetcher inputFetcher, IOutputPrinter outputPrinter) : base(state, scope, inputFetcher, outputPrinter)
+		{
+		}
+	}
+
+	public abstract class State
+	{
+		protected Context _context;
+
+		public void SetContext(Context context)
+		{
+			_context = context;
+		}
+
 		public abstract void Handle(Context context);
 	}
 
-	abstract class FetchCommandState : State
+	public class FetchCommandState : State
 	{
-
+		public override void Handle(Context context)
+		{
+			context.InputFetcher.FetchNext();
+		}
 	}
 
-	abstract class InputCommandParameterStateState : State
+	public class FetchExitCommandState : State
 	{
+		public override void Handle(Context context)
+		{
+			context.InputFetcher.FetchNext();
+		}
+	}
 
+	public class InputCommandParameterStateState : State
+	{
+		public override void Handle(Context context)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }
