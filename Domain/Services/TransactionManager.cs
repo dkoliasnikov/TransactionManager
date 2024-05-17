@@ -5,13 +5,14 @@ using Domain.CQRS.Abstractions.Params;
 using Domain.CQRS.Abstractions.Params.Abstractions;
 using Domain.Models;
 using Generic.CQRS.Abstractions.Params.Abstractions;
+using Generic.Exceptions;
 using System.Text.Json;
 
 namespace Domain.Services;
 
 internal class TransactionManager : ITransactionManager
 {
-	private readonly Dictionary<Type, Action<object>> _handlersMap ;
+	private readonly Dictionary<Type, Func<object, Task>> _handlersMap ;
 
 	private readonly ILifetimeScope _scope;
 
@@ -22,7 +23,7 @@ internal class TransactionManager : ITransactionManager
 		_handlersMap = new()
 			{
 				{
-					typeof(IGetTransactionQueryHandler), (parameter) => Console.WriteLine(JsonSerializer.Serialize(_scope.Resolve<IGetTransactionQueryHandler>().GetAsync(parameter as IGetTransactionParameter)))
+					typeof(IGetTransactionQueryHandler), async (parameter) => Console.WriteLine(JsonSerializer.Serialize(await _scope.Resolve<IGetTransactionQueryHandler>().GetAsync(parameter as IGetTransactionParameter)))
 				},
 				{
 					typeof(IAddOrUpdateTransactionCommandHandler), (parameter) => _scope.Resolve<IAddOrUpdateTransactionCommandHandler>().Handle(parameter as IAddTransactionParameter)
@@ -43,8 +44,8 @@ internal class TransactionManager : ITransactionManager
 			{
 				Console.WriteLine("Введите команду ");
 				var command = Console.ReadLine();
-				Type request = null;
-				IParameter parameter = null;
+				Type? request = null;
+				IParameter? parameter = null;
 
 				switch (command)
 				{
@@ -106,10 +107,22 @@ internal class TransactionManager : ITransactionManager
 						break;
 				}
 
-				_handlersMap[request].Invoke(parameter);
+				if (request is not null && parameter is not null)
+				{ 
+					await _handlersMap[request].Invoke(parameter);
+					request = null;
+					parameter = null;
+					Console.WriteLine("[Ok]");
+				}
 
-				Console.WriteLine("[Ok]");
-
+			}
+			catch (EntityNotFoundException ex)
+			{
+				Console.WriteLine("Transaction not found");
+			}
+			catch (EntityAlreadyExistsException ex)
+			{
+				Console.WriteLine("Transaction already exists");
 			}
 			catch (Exception ex)
 			{
