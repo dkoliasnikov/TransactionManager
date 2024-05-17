@@ -2,4 +2,4 @@
 
 namespace Domain.Abstractions;
 
-public interface ITransactionRepository : IRepository<Transaction> { }
+public interface ITransactionRepository : IRepository<Transaction, int> { }

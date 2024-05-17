@@ -1,6 +1,8 @@
-﻿namespace Domain.CQRS.Abstractions;
+﻿using Domain.CQRS.Abstractions.Params.Abstractions;
 
-internal interface IExitCommand : IUserCommand
+namespace Domain.CQRS.Abstractions;
+
+internal interface IExitCommand : IUserCommand<IExitAppParameter>
 {
-    void TerminateProgram();
+    Task TerminateProgram();
 }

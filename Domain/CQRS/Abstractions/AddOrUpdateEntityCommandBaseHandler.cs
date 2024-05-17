@@ -1,13 +1,16 @@
 ﻿using Domain.Abstractions;
+using Domain.CQRS.Abstractions.Params.Abstractions;
 using Domain.Enums;
 using Domain.Exceptions;
 
 namespace Domain.CQRS.Abstractions;
 
-abstract internal class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT> : IAddEntityCommand<EntityT>
-        where RepositoryT : IRepository<EntityT>
+abstract internal class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT, ParameterT, KeyT> : IAddEntityCommand<EntityT, ParameterT>
+        where RepositoryT : IRepository<EntityT, KeyT>
+		where ParameterT : IAddEntityParameter<EntityT>
+
 {
-    private readonly EntityAlreadyExistsBehavior _alreadyExistsBehavior = EntityAlreadyExistsBehavior.PropagateException;
+	private readonly EntityAlreadyExistsBehavior _alreadyExistsBehavior = EntityAlreadyExistsBehavior.PropagateException;
 
     private readonly EnityNotFoundBehavior _notFoundBehavior = EnityNotFoundBehavior.PropagateException;
 
@@ -28,7 +31,16 @@ abstract internal class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT
             await UpdateTransaction(entity);
     }
 
-    private async Task<bool> Add(EntityT transaction)
+	public async Task Handle(ParameterT parameter)
+	{
+        var addOrUpdateParameter = parameter as IAddEntityParameter<EntityT>;
+        if (addOrUpdateParameter is null)
+            throw new ArgumentException($"Parameter should by instantiated from type \"{typeof(EntityT).GetType().FullName}\". Paremeter type: \"{parameter.GetType().FullName}\"");
+
+        await AddOrUpdateAsync(addOrUpdateParameter.Transaction);
+	}
+
+	private async Task<bool> Add(EntityT transaction)
     {
         var haveToUpdate = false;
 

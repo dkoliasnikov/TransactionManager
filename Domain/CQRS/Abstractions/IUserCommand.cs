@@ -1,3 +1,9 @@
-﻿namespace Domain.CQRS.Abstractions;
+﻿using Domain.CQRS.Abstractions.Params.Abstractions;
 
-internal interface IUserCommand : IUserRequest { }
+namespace Domain.CQRS.Abstractions;
+
+internal interface IUserCommand<ParameterT> : IUserRequest
+	where ParameterT : IParameter
+{
+	Task Handle(ParameterT parameter);
+}
