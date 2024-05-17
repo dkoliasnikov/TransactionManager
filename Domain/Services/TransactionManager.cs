@@ -4,6 +4,8 @@ using Domain.CQRS.Abstractions;
 using Domain.CQRS.Abstractions.Params;
 using Domain.CQRS.Abstractions.Params.Abstractions;
 using Domain.Models;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Domain.Services;
 
@@ -37,100 +39,107 @@ internal class TransactionManager : ITransactionManager
 
 	}
 
+	Dictionary<Type, Action<object>> pesudoMediatr ;
+
 	private readonly ILifetimeScope _scope;
 
 	public TransactionManager(ILifetimeScope scope)
 	{
 		_scope = scope;
+		
+		pesudoMediatr = new()
+			{
+				{
+					typeof(IGetTransactionQueryHandler), (parameter) => Console.WriteLine(JsonSerializer.Serialize(_scope.Resolve<IGetTransactionQueryHandler>().GetAsync(parameter as IGetTransactionParameter)))
+				},
+				{
+					typeof(IAddOrUpdateTransactionCommandHandler), (parameter) => _scope.Resolve<IAddOrUpdateTransactionCommandHandler>().Handle(parameter as IAddTransactionParameter)
+
+				},
+				{
+					typeof(IExitCommand), (parameter) => _scope.Resolve<IExitCommand>().Handle(parameter as ExitAppParameter)
+				}
+			};
 	}
+
 
 	public async Task Run()
 	{
 		while (true)
 		{
-			Console.WriteLine("Введите команду");
-			var command = Console.ReadLine();
-			Type request = null;
-			IParameter parameter = null;
-
-			Dictionary<Type, Action<object>> map = new()
+			try
 			{
+				Console.WriteLine("Введите команду");
+				var command = Console.ReadLine();
+				Type request = null;
+				IParameter parameter = null;
+
+				switch (command)
 				{
-					typeof(IUserQuery<IGetTransactionParameter, Transaction>),
-					(parameter) => {
-						_scope.Resolve<IUserQuery<IGetTransactionParameter, Transaction>>().GetAsync(parameter as IGetTransactionParameter);
-					}
-				},
-				{
-					typeof(IUserCommand<IAddTransactionParameter>),
-					(parameter) => {
-						_scope.Resolve<IUserCommand<IAddTransactionParameter>>().Handle(parameter as IAddTransactionParameter);
-					}
-				},
-				{
-					typeof(IExitCommand),
-					(parameter) => {
-						_scope.Resolve<IExitCommand>().Handle(parameter as ExitAppParameter);
-					}
-				}
-			};
-
-			switch (command)
-			{
-				case "exit":
-					request = typeof(IExitCommand);
-					parameter = null;
-
-					break;
-
-				case "get":
-					while (true)
-					{
-						Console.Write("Введите id");
-						var _successfullyParsedId = int.TryParse(Console.ReadLine(), out var _id);
-						if (!_successfullyParsedId)
-							Console.WriteLine("Некорректное значение");
-						else
-							continue;
-
-						request = typeof(IGetTransactionQueryHandler);
-						parameter = new GetTransactionParameter(_id);
+					case "exit":
+						request = typeof(IExitCommand);
+						parameter = null;
 
 						break;
-					}
 
-					break;
-				case "add":
-					Console.Write("Введите id");
-					var successfullyParsedId = int.TryParse(Console.ReadLine(), out var id);
-					if (!successfullyParsedId)
-						Console.WriteLine("Некорректное значение");
-					else
-						continue;
+					case "get":
+						while (true)
+						{
+							Console.Write("Введите id");
+							var _successfullyParsedId = int.TryParse(Console.ReadLine(), out var _id);
+							if (!_successfullyParsedId)
+							{
+								Console.WriteLine("Некорректное значение");
+								continue;
+							}
 
-					Console.Write("Введите дату");
-					var successfullyParsedDate = DateTime.TryParse(Console.ReadLine(), out var dateTime);
-					if (!successfullyParsedDate)
-						Console.WriteLine("Некорректное значение");
-					else
-						continue;
+							request = typeof(IGetTransactionQueryHandler);
+							parameter = new GetTransactionParameter(_id);
 
-					Console.Write("Введите сумму");
-					var successfullyParsedAmount = int.TryParse(Console.ReadLine(), out var amount);
-					if (!successfullyParsedAmount)
-						Console.WriteLine("Некорректное значение");
-					else
-						continue;
+							break;
+						}
 
-					request = typeof(IAddOrUpdateTransactionCommandHandler);
-					parameter = new AddTransactionParameter(new Transaction(id, dateTime, amount));
-					break;
-				default:
-					Console.WriteLine("Неизвестная команда");
-					break;
+						break;
+
+					case "add":
+						Console.Write("Введите id");
+						var successfullyParsedId = int.TryParse(Console.ReadLine(), out var id);
+						if (!successfullyParsedId)
+						{
+							Console.WriteLine("Некорректное значение");
+							continue;
+						}
+
+						Console.Write("Введите дату");
+						var successfullyParsedDate = DateTime.TryParse(Console.ReadLine(), out var dateTime);
+						if (!successfullyParsedDate)
+						{
+							Console.WriteLine("Некорректное значение");
+							continue;
+						}
+
+						Console.Write("Введите сумму");
+						var successfullyParsedAmount = int.TryParse(Console.ReadLine(), out var amount);
+						if (!successfullyParsedAmount)
+						{
+							Console.WriteLine("Некорректное значение");
+							continue;
+						}
+
+						request = typeof(IAddOrUpdateTransactionCommandHandler);
+						parameter = new AddTransactionParameter(new Transaction(id, dateTime, amount));
+						break;
+					default:
+						Console.WriteLine("Неизвестная команда");
+						break;
+				}
+
+				pesudoMediatr[request].Invoke(parameter);
 			}
-
-			map[request].Invoke(parameter);
+			catch (Exception ex)
+			{
+				Console.WriteLine(ex.ToString());
+			}
 		}
 	}
 }

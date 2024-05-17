@@ -2,6 +2,8 @@
 using Domain.Abstractions;
 using Domain.Comands.Handlers;
 using Domain.CQRS.Abstractions;
+using Domain.CQRS.Abstractions.Params.Abstractions;
+using Domain.CQRS.Abstractions.Params;
 using Domain.CQRS.Handlers;
 using Domain.Enums;
 using Domain.Services;

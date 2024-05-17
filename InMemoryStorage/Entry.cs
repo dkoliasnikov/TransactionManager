@@ -8,8 +8,7 @@ public static class Entry
 {
 	public static ContainerBuilder AddInMemoryStorage(this ContainerBuilder builder)
 	{
-		builder.RegisterType<InMemoryTransactionRepository>().As<ITransactionRepository>();
-
+		builder.RegisterInstance<ITransactionRepository>(new InMemoryTransactionRepository());
 		return builder;
 	}
 }
