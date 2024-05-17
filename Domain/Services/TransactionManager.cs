@@ -5,7 +5,6 @@ using Domain.CQRS.Abstractions.Params;
 using Domain.CQRS.Abstractions.Params.Abstractions;
 using Domain.Models;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Domain.Services;
 
