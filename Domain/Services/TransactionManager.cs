@@ -11,34 +11,6 @@ namespace Domain.Services;
 
 internal class TransactionManager : ITransactionManager
 {
-	class Context
-	{
-		public State State { get; set; }
-		public Context(State state)
-		{
-			this.State = state;
-		}
-		public void Request()
-		{
-			this.State.Handle(this);
-		}
-	}
-
-	abstract class State
-	{
-		public abstract void Handle(Context context);
-	}
-
-	abstract class FetchCommandState : State
-	{
-
-	}
-
-	abstract class InputCommandParameterStateState : State
-	{
-
-	}
-
 	Dictionary<Type, Action<object>> pesudoMediatr ;
 
 	private readonly ILifetimeScope _scope;
@@ -69,7 +41,7 @@ internal class TransactionManager : ITransactionManager
 		{
 			try
 			{
-				Console.WriteLine("Введите команду");
+				Console.WriteLine("Введите команду ");
 				var command = Console.ReadLine();
 				Type request = null;
 				IParameter parameter = null;
@@ -85,7 +57,7 @@ internal class TransactionManager : ITransactionManager
 					case "get":
 						while (true)
 						{
-							Console.Write("Введите id");
+							Console.Write("Введите id ");
 							var _successfullyParsedId = int.TryParse(Console.ReadLine(), out var _id);
 							if (!_successfullyParsedId)
 							{
@@ -102,7 +74,7 @@ internal class TransactionManager : ITransactionManager
 						break;
 
 					case "add":
-						Console.Write("Введите id");
+						Console.Write("Введите id ");
 						var successfullyParsedId = int.TryParse(Console.ReadLine(), out var id);
 						if (!successfullyParsedId)
 						{
@@ -110,7 +82,7 @@ internal class TransactionManager : ITransactionManager
 							continue;
 						}
 
-						Console.Write("Введите дату");
+						Console.Write("Введите дату ");
 						var successfullyParsedDate = DateTime.TryParse(Console.ReadLine(), out var dateTime);
 						if (!successfullyParsedDate)
 						{
@@ -118,7 +90,7 @@ internal class TransactionManager : ITransactionManager
 							continue;
 						}
 
-						Console.Write("Введите сумму");
+						Console.Write("Введите сумму ");
 						var successfullyParsedAmount = int.TryParse(Console.ReadLine(), out var amount);
 						if (!successfullyParsedAmount)
 						{
