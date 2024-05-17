@@ -48,7 +48,7 @@ internal class TransactionManager : ITransactionManager
 			try
 			{
 				_outputPrinter.WriteLine("Введите команду ");
-				var command = _inputFetcher.FetchNext();
+				var command = _inputFetcher.FetchNext().Trim().ToLower();
 				Type? request = null;
 				IParameter? parameter = null;
 
@@ -81,6 +81,7 @@ internal class TransactionManager : ITransactionManager
 
 					case "add":
 						_outputPrinter.Write("Введите id ");
+
 						var successfullyParsedId = int.TryParse(_inputFetcher.FetchNext(), out var id);
 						if (!successfullyParsedId)
 						{
