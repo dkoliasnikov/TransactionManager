@@ -1,4 +1,4 @@
-﻿using Domain.CQRS.Abstractions.Params.Abstractions;
+﻿using Domain.CQRS.Params.Abstractions;
 
 namespace Domain.CQRS.Abstractions.Params;
 

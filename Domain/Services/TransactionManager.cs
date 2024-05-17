@@ -4,6 +4,7 @@ using Domain.CQRS.Abstractions;
 using Domain.CQRS.Abstractions.Params;
 using Domain.CQRS.Abstractions.Params.Abstractions;
 using Domain.Models;
+using Generic.CQRS.Abstractions.Params.Abstractions;
 using System.Text.Json;
 
 namespace Domain.Services;

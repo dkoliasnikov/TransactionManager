@@ -1,10 +1,9 @@
 ﻿using Autofac;
 using Domain.Abstractions;
-using Domain.Comands.Handlers;
 using Domain.CQRS.Abstractions;
 using Domain.CQRS.Handlers;
-using Domain.Enums;
 using Domain.Services;
+using Generic.Enums;
 
 namespace Domain;
 

@@ -1,11 +1,11 @@
-﻿using Domain.Abstractions;
-using Domain.CQRS.Abstractions.Params.Abstractions;
-using Domain.Enums;
-using Domain.Exceptions;
+﻿using Generic.Abstractions;
+using Generic.CQRS.Abstractions.Params.Abstractions;
+using Generic.Enums;
+using Generic.Exceptions;
 
-namespace Domain.CQRS.Abstractions;
+namespace Generic.CQRS.Abstractions;
 
-abstract internal class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT, ParameterT, KeyT>  :
+abstract public class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT, ParameterT, KeyT>  :
 	IAddEntityCommand<EntityT, ParameterT>
         where RepositoryT : IRepository<EntityT, KeyT>
 		where ParameterT : IAddEntityParameter<EntityT>

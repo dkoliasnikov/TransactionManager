@@ -1,11 +1,11 @@
-﻿using Domain.Exceptions;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using Mapster;
-using Domain.Abstractions;
+using Generic.Abstractions;
+using Generic.Exceptions;
 
-namespace InMemoryStorage.Abstracations;
+namespace InMemoryStorage.Abstractions;
 
-internal class BaseRepository <EntityT> 
+internal class BaseRepository<EntityT>
 	where EntityT : IHaveId
 {
 	private readonly ConcurrentDictionary<int, EntityT> _storage = new();

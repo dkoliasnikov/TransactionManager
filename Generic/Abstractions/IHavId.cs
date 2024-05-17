@@ -1,4 +1,4 @@
-﻿namespace Domain.Abstractions;
+﻿namespace Generic.Abstractions;
 
 public interface IHaveId
 {

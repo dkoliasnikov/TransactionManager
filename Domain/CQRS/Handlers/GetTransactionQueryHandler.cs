@@ -1,15 +1,16 @@
 ﻿using Domain.Abstractions;
 using Domain.CQRS.Abstractions;
 using Domain.CQRS.Abstractions.Params.Abstractions;
-using Domain.Enums;
 using Domain.Models;
+using Generic.CQRS.Abstractions;
+using Generic.Enums;
 
-namespace Domain.Comands.Handlers;
+namespace Domain.CQRS.Handlers;
 
 internal class GetTransactionQueryHandler : GetEntityQueryBaseHandler<Transaction, ITransactionRepository, IGetTransactionParameter, int>,
 	  IGetTransactionQueryHandler
 {
-	public GetTransactionQueryHandler(ITransactionRepository transactionRepository, EnityNotFoundBehavior notFoundBehavior) 
+	public GetTransactionQueryHandler(ITransactionRepository transactionRepository, EnityNotFoundBehavior notFoundBehavior)
 		: base(transactionRepository, notFoundBehavior)
 	{
 	}

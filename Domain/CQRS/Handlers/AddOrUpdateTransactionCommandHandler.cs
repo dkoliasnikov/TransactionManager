@@ -1,8 +1,9 @@
 ﻿using Domain.Abstractions;
 using Domain.CQRS.Abstractions;
 using Domain.CQRS.Abstractions.Params.Abstractions;
-using Domain.Enums;
 using Domain.Models;
+using Generic.CQRS.Abstractions;
+using Generic.Enums;
 
 namespace Domain.CQRS.Handlers;
 

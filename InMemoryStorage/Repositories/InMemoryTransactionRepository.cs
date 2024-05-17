@@ -1,10 +1,11 @@
 ﻿using Domain.Abstractions;
 using Domain.Models;
-using InMemoryStorage.Abstracations;
+using Generic.Abstractions;
+using InMemoryStorage.Abstractions;
 
-namespace InMemoryStorage.Services;
+namespace InMemoryStorage.Repositories;
 
 internal class InMemoryTransactionRepository : BaseRepository<Transaction>, IRepository<Transaction, int>, ITransactionRepository
 {
-	
+
 }

@@ -1,4 +1,4 @@
-﻿namespace Domain.Enums;
+﻿namespace Generic.Enums;
 
 
 public enum EnityNotFoundBehavior { Ignore, PropagateException };

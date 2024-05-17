@@ -1,4 +1,4 @@
-﻿namespace Domain.Exceptions;
+﻿namespace Generic.Exceptions;
 
 public class EntityAlreadyExistsException : Exception
 {

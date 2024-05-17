@@ -1,11 +1,11 @@
-﻿using Domain.Abstractions;
-using Domain.CQRS.Abstractions.Params.Abstractions;
-using Domain.Enums;
-using Domain.Exceptions;
+﻿using Generic.Abstractions;
+using Generic.CQRS.Abstractions.Params.Abstractions;
+using Generic.Enums;
+using Generic.Exceptions;
 
-namespace Domain.CQRS.Abstractions;
+namespace Generic.CQRS.Abstractions;
 
-abstract internal class GetEntityQueryBaseHandler<EntityT, RepositoryT, ParameterT, KeyT> : IGetEntityQuery<EntityT, ParameterT, KeyT>
+abstract public class GetEntityQueryBaseHandler<EntityT, RepositoryT, ParameterT, KeyT> : IGetEntityQuery<EntityT, ParameterT, KeyT>
         where RepositoryT : IRepository<EntityT, KeyT>
 		where ParameterT : IGetEntityParameter<EntityT, KeyT>
 {
