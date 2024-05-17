@@ -1,6 +1,5 @@
 ﻿using Autofac;
 using Domain.Abstractions;
-using Domain.Models;
 using InMemoryStorage.Services;
 
 namespace InMemoryStorage;

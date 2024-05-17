@@ -5,10 +5,10 @@ using Domain.Exceptions;
 
 namespace Domain.CQRS.Abstractions;
 
-abstract internal class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT, ParameterT, KeyT> : IAddEntityCommand<EntityT, ParameterT>
+abstract internal class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT, ParameterT, KeyT>  :
+	IAddEntityCommand<EntityT, ParameterT>
         where RepositoryT : IRepository<EntityT, KeyT>
 		where ParameterT : IAddEntityParameter<EntityT>
-
 {
 	private readonly EntityAlreadyExistsBehavior _alreadyExistsBehavior = EntityAlreadyExistsBehavior.PropagateException;
 

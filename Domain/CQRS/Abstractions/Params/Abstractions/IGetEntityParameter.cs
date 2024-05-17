@@ -1,7 +1,4 @@
-﻿
-using Domain.Models;
-
-namespace Domain.CQRS.Abstractions.Params.Abstractions;
+﻿namespace Domain.CQRS.Abstractions.Params.Abstractions;
 
 internal interface IGetEntityParameter<EntityT, KeyT> : IParameter
 {

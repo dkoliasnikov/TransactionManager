@@ -6,8 +6,8 @@ using Domain.Models;
 
 namespace Domain.Comands.Handlers;
 
-internal class GetTransactionQueryHandler : GetEntityQueryBaseHandler<Transaction, ITransactionRepository, GetTransactionParameter, int>, 
-	  IGetTransactionQuery
+internal class GetTransactionQueryHandler : GetEntityQueryBaseHandler<Transaction, ITransactionRepository, GetTransactionParameter, int>,
+	  IGetTransactionQueryHandler
 {
 	public GetTransactionQueryHandler(ITransactionRepository transactionRepository, EnityNotFoundBehavior notFoundBehavior) 
 		: base(transactionRepository, notFoundBehavior)

@@ -19,7 +19,7 @@ public static class Entry
 			.WithParameter("alreadyExistsBehavior", alreadyExistsBehavior)
 			.WithParameter("notFoundBehavior", notFoundBehavior);
 
-		builder.RegisterType<GetTransactionQueryHandler>().As<IGetTransactionQuery>()
+		builder.RegisterType<GetTransactionQueryHandler>().As<IGetTransactionQueryHandler>()
 			.WithParameter("notFoundBehavior", notFoundBehavior);
 
 		builder.RegisterType<ExitCommandHandler>().As<IExitCommand>();

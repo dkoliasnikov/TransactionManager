@@ -1,3 +1,9 @@
-﻿namespace Domain.CQRS.Abstractions;
+﻿using Domain.CQRS.Abstractions.Params;
+using Domain.Models;
 
-internal interface IAddOrUpdateTransactionCommandHandler { }
+namespace Domain.CQRS.Abstractions;
+
+internal interface IAddOrUpdateTransactionCommandHandler : 
+	IAddEntityCommand<Transaction, AddTransactionParameter>
+{ 
+}
