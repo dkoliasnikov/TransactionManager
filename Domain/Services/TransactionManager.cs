@@ -10,7 +10,7 @@ namespace Domain.Services;
 
 internal class TransactionManager : ITransactionManager
 {
-	Dictionary<Type, Action<object>> pesudoMediatr ;
+	private readonly Dictionary<Type, Action<object>> _handlersMap ;
 
 	private readonly ILifetimeScope _scope;
 
@@ -18,7 +18,7 @@ internal class TransactionManager : ITransactionManager
 	{
 		_scope = scope;
 		
-		pesudoMediatr = new()
+		_handlersMap = new()
 			{
 				{
 					typeof(IGetTransactionQueryHandler), (parameter) => Console.WriteLine(JsonSerializer.Serialize(_scope.Resolve<IGetTransactionQueryHandler>().GetAsync(parameter as IGetTransactionParameter)))
@@ -105,7 +105,10 @@ internal class TransactionManager : ITransactionManager
 						break;
 				}
 
-				pesudoMediatr[request].Invoke(parameter);
+				_handlersMap[request].Invoke(parameter);
+
+				Console.WriteLine("[Ok]");
+
 			}
 			catch (Exception ex)
 			{
