@@ -40,10 +40,7 @@ abstract public class GetEntityQueryBaseHandler<EntityT, RepositoryT, ParameterT
 
 	public async Task<EntityT?> GetAsync(ParameterT parameter)
 	{
-		var getParameter = parameter as IGetEntityParameter<EntityT, KeyT>;
-		if (getParameter is null)
-			throw new ArgumentException($"Parameter should by instantiated from type \"{typeof(EntityT).GetType().FullName}\". Paremeter type: \"{parameter.GetType().FullName}\"");
-
+		var getParameter = parameter as IGetEntityParameter<EntityT, KeyT> ?? throw new ArgumentException($"Parameter should by instantiated from type \"{typeof(EntityT).GetType().FullName}\". Paremeter type: \"{parameter.GetType().FullName}\"");
 		return await GetEnityAsync(getParameter.Key);
 	}
 }

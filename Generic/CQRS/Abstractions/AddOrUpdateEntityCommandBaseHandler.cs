@@ -33,11 +33,8 @@ abstract public class AddOrUpdateEntityCommandBaseHandler<EntityT, RepositoryT, 
 
 	public async Task Handle(ParameterT parameter)
 	{
-        var addOrUpdateParameter = parameter as IAddEntityParameter<EntityT>;
-        if (addOrUpdateParameter is null)
-            throw new ArgumentException($"Parameter should by instantiated from type \"{typeof(EntityT).GetType().FullName}\". Paremeter type: \"{parameter.GetType().FullName}\"");
-
-        await AddOrUpdateAsync(addOrUpdateParameter.Transaction);
+        var addOrUpdateParameter = parameter as IAddEntityParameter<EntityT> ?? throw new ArgumentException($"Parameter should by instantiated from type \"{typeof(EntityT).GetType().FullName}\". Paremeter type: \"{parameter.GetType().FullName}\"");
+		await AddOrUpdateAsync(addOrUpdateParameter.Transaction);
 	}
 
 	private async Task<bool> Add(EntityT transaction)
