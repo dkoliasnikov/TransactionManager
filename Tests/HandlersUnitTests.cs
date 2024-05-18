@@ -7,11 +7,10 @@ using Domain.Models;
 using FluentAssertions;
 using Generic.Exceptions;
 using InMemoryStorage;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace Tests;
 
-public class UnitTests
+public class HandlersUnitTests
 {
 	[Fact]
 	public async void Add_Transaction_Successfully()

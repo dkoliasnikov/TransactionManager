@@ -1,17 +1,12 @@
 ﻿using Domain.CQRS.Abstractions;
 using Domain.CQRS.Params.Abstractions;
+using Domain.Exceptions;
 
 namespace Domain.CQRS.Handlers;
 
 internal class ExitCommandHandler : IExitCommand
 {
-	public async Task Handle(IExitAppParameter parameter)
-	{
-		await TerminateProgram();
-	}
+	public  Task Handle(IExitAppParameter parameter) => TerminateProgram();
 
-	public async Task TerminateProgram()
-	{
-		Environment.Exit(1);
-	}
+	public async Task TerminateProgram() => throw new TerminatedByUserException();
 }

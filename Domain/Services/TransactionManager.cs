@@ -3,6 +3,7 @@ using Domain.Abstractions;
 using Domain.CQRS.Abstractions;
 using Domain.CQRS.Abstractions.Params;
 using Domain.CQRS.Abstractions.Params.Abstractions;
+using Domain.Exceptions;
 using Domain.Models;
 using Generic.CQRS.Abstractions.Params.Abstractions;
 using Generic.Exceptions;
@@ -63,13 +64,18 @@ internal class TransactionManager : ITransactionManager
 					_outputPrinter.WriteLine("Неизвестная команда");
 				}
 			}
-			catch (EntityNotFoundException ex)
+			catch (EntityNotFoundException)
 			{
 				_outputPrinter.WriteLine("Транзакция не найдена");
 			}
-			catch (EntityAlreadyExistsException ex)
+			catch (EntityAlreadyExistsException)
 			{
 				_outputPrinter.WriteLine("Транзакция уже существует");
+			}
+			catch(TerminatedByUserException)
+			{
+				_outputPrinter.WriteLine("Завершаем работу программы");
+				break;
 			}
 			catch (Exception ex)
 			{
