@@ -1,4 +1,4 @@
 ﻿namespace Generic.Enums;
 
 
-public enum EnityNotFoundBehavior { Ignore, PropagateException };
+public enum EnityNotFoundBehavior { PropagateException, Ignore };

@@ -26,12 +26,12 @@ internal class BaseRepository<EntityT, KeyT>
 		return Task.FromResult(transaction);
 	}
 
-	public Task UpdateAsync(EntityT entity)
+	public async Task UpdateAsync(EntityT entity)
 	{
-		var updatingEnitity = GetAsync(entity.Id);
+		var updatingEnitity = await GetAsync(entity.Id);
 
 		entity.Adapt(updatingEnitity);
 
-		return Task.CompletedTask;
+		_storage.AddOrUpdate(entity.Id, entity, (key, oldValue) => entity);
 	}
 }

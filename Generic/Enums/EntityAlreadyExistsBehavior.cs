@@ -1,3 +1,3 @@
 ﻿namespace Generic.Enums;
 
-public enum EntityAlreadyExistsBehavior { Ignore, Update, PropagateException }
+public enum EntityAlreadyExistsBehavior { PropagateException, Ignore, Update }
