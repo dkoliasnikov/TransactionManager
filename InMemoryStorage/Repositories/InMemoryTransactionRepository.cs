@@ -5,7 +5,7 @@ using InMemoryStorage.Abstractions;
 
 namespace InMemoryStorage.Repositories;
 
-internal class InMemoryTransactionRepository : BaseRepository<Transaction>, IRepository<Transaction, int>, ITransactionRepository
+internal class InMemoryTransactionRepository : BaseRepository<Transaction, int>, IRepository<Transaction, int>, ITransactionRepository
 {
 
 }

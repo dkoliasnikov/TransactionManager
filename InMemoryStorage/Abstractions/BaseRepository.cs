@@ -5,10 +5,10 @@ using Generic.Exceptions;
 
 namespace InMemoryStorage.Abstractions;
 
-internal class BaseRepository<EntityT>
-	where EntityT : IHaveId
+internal class BaseRepository<EntityT, KeyT>
+	where EntityT : IHaveKey<KeyT>
 {
-	private readonly ConcurrentDictionary<int, EntityT> _storage = new();
+	private readonly ConcurrentDictionary<KeyT, EntityT> _storage = new();
 
 	public Task AddAsync(EntityT entity)
 	{
@@ -18,7 +18,7 @@ internal class BaseRepository<EntityT>
 		return Task.CompletedTask;
 	}
 
-	public Task<EntityT> GetAsync(int id)
+	public Task<EntityT> GetAsync(KeyT id)
 	{
 		if (!_storage.TryGetValue(id, out var transaction))
 			throw new EntityNotFoundException($"Transaction with id {id} not found");

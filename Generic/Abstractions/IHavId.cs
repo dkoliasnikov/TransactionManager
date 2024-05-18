@@ -1,6 +1,6 @@
 ﻿namespace Generic.Abstractions;
 
-public interface IHaveId
+public interface IHaveKey<KeyT>
 {
-	int Id { get; }
+	KeyT Id { get; }
 }

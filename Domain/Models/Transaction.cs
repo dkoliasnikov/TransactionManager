@@ -2,4 +2,4 @@
 
 namespace Domain.Models;
 
-public record Transaction(int Id, DateTime TransactionDate, decimal Amount) : IHaveId;
+public record Transaction(int Id, DateTime TransactionDate, decimal Amount) : IHaveKey<int>;
