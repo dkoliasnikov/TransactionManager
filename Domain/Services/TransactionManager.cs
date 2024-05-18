@@ -13,7 +13,7 @@ namespace Domain.Services;
 
 internal class TransactionManager : ITransactionManager
 {
-	private Dictionary<string, CommandFactory> _handlersFactory;
+	private Dictionary<string, CommandFactory> _commandsFactory;
 	private readonly ILifetimeScope _scope;
 	private readonly IInputFetcher _inputFetcher;
 	private readonly IOutputPrinter _outputPrinter;
@@ -26,7 +26,7 @@ internal class TransactionManager : ITransactionManager
 		_inputFetcher = userInputFetcher;
 		_outputPrinter = outputPrinter;
 
-		_handlersFactory = new Dictionary<string, CommandFactory>()
+		_commandsFactory = new Dictionary<string, CommandFactory>()
 				{
 					{ "exit",  
 						new (() => new ExitAppParameter(),
@@ -54,9 +54,9 @@ internal class TransactionManager : ITransactionManager
 			{
 				_outputPrinter.WriteLine("Введите команду ");
 
-				if(_handlersFactory.TryGetValue(_inputFetcher.FetchNext().Trim().ToLower(), out var builderWithCommand))
+				if(_commandsFactory.TryGetValue(_inputFetcher.FetchNext().Trim().ToLower(), out var commandCreator))
 				{
-					await builderWithCommand.CommandBuilder.Invoke(builderWithCommand.ParameterBuilder());
+					await commandCreator.CommandBuilder.Invoke(commandCreator.ParameterBuilder());
 					_outputPrinter.WriteLine("[Ok]");
 				}
 				else
