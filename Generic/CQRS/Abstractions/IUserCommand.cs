@@ -2,7 +2,7 @@
 
 namespace Generic.CQRS.Abstractions;
 
-public interface IUserCommand<ParameterT> : IUserRequest
+public interface IUserCommand<ParameterT>
 	where ParameterT : IParameter
 {
 	Task Handle(ParameterT parameter);
