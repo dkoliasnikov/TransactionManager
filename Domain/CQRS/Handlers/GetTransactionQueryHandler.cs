@@ -7,8 +7,8 @@ using Generic.Enums;
 
 namespace Domain.CQRS.Handlers;
 
-internal class GetTransactionQueryHandler : GetEntityQueryBaseHandler<Transaction, ITransactionRepository, IGetTransactionParameter, int>,
-	  IGetTransactionQueryHandler
+internal class GetTransactionQueryHandler : GetEntityQueryBaseHandler<Transaction, ITransactionRepository, IQueryTransactionParameter, int>,
+	  ITransactionQuery
 {
 	public GetTransactionQueryHandler(ITransactionRepository transactionRepository, EnityNotFoundBehavior notFoundBehavior)
 		: base(transactionRepository, notFoundBehavior)

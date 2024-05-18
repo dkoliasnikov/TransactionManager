@@ -2,9 +2,9 @@
 
 namespace Domain.CQRS.Abstractions.Params;
 
-internal class GetTransactionParameter : IGetTransactionParameter
+public class QueryTransactionParameter : IQueryTransactionParameter
 {
-	public GetTransactionParameter(int key)
+	public QueryTransactionParameter(int key)
 	{
 		Key = key;
 	}

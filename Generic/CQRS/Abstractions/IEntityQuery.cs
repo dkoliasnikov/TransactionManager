@@ -2,7 +2,7 @@
 
 namespace Generic.CQRS.Abstractions;
 
-public interface IGetEntityQuery<EntityT, ParameterT, KeyT> : IUserQuery<ParameterT, EntityT>
+public interface IEntityQuery<EntityT, ParameterT, KeyT> : IUserQuery<ParameterT, EntityT>
 	where ParameterT : IParameter
 {
 	/// <exception cref="EntityNotFoundException"></exception>

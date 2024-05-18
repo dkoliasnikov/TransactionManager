@@ -3,7 +3,7 @@ using Domain.Models;
 
 namespace Domain.CQRS.Abstractions.Params;
 
-internal class AddTransactionParameter : IAddTransactionParameter
+public class AddTransactionParameter : IAddTransactionParameter
 {
 	public AddTransactionParameter(Transaction transaction)
 	{

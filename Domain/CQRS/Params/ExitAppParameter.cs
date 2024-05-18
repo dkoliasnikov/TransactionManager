@@ -2,6 +2,6 @@
 
 namespace Domain.CQRS.Abstractions.Params;
 
-internal class ExitAppParameter : IExitAppParameter
+public class ExitAppParameter : IExitAppParameter
 {
 }

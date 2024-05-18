@@ -9,7 +9,7 @@ namespace Domain.CQRS.Handlers;
 
 internal class AddOrUpdateTransactionCommandHandler
     : AddOrUpdateEntityCommandBaseHandler<Transaction, ITransactionRepository, IAddTransactionParameter, int>, 
-    IAddOrUpdateTransactionCommandHandler
+    IAddOrUpdateTransactionCommand
 {
     public AddOrUpdateTransactionCommandHandler(ITransactionRepository transactionRepository, EntityAlreadyExistsBehavior alreadyExistsBehavior, EnityNotFoundBehavior notFoundBehavior) : base(transactionRepository, alreadyExistsBehavior, notFoundBehavior)
     {

@@ -14,11 +14,11 @@ public static class Entry
 		EnityNotFoundBehavior notFoundBehavior = EnityNotFoundBehavior.PropagateException)
 	{
 		builder.RegisterType<TransactionManager>().As<ITransactionManager>();
-		builder.RegisterType<AddOrUpdateTransactionCommandHandler>().As<IAddOrUpdateTransactionCommandHandler>()
+		builder.RegisterType<AddOrUpdateTransactionCommandHandler>().As<IAddOrUpdateTransactionCommand>()
 			.WithParameter("alreadyExistsBehavior", alreadyExistsBehavior)
 			.WithParameter("notFoundBehavior", notFoundBehavior);
 
-		builder.RegisterType<GetTransactionQueryHandler>().As<IGetTransactionQueryHandler>()
+		builder.RegisterType<GetTransactionQueryHandler>().As<ITransactionQuery>()
 			.WithParameter("notFoundBehavior", notFoundBehavior);
 
 		builder.RegisterType<ExitCommandHandler>().As<IExitCommand>();

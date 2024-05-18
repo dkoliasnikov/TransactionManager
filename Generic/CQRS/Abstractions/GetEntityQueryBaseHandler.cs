@@ -5,7 +5,7 @@ using Generic.Exceptions;
 
 namespace Generic.CQRS.Abstractions;
 
-abstract public class GetEntityQueryBaseHandler<EntityT, RepositoryT, ParameterT, KeyT> : IGetEntityQuery<EntityT, ParameterT, KeyT>
+abstract public class GetEntityQueryBaseHandler<EntityT, RepositoryT, ParameterT, KeyT> : IEntityQuery<EntityT, ParameterT, KeyT>
         where RepositoryT : IRepository<EntityT, KeyT>
 		where ParameterT : IGetEntityParameter<EntityT, KeyT>
 {

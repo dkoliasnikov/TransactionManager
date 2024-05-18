@@ -4,6 +4,7 @@ using Generic.CQRS.Abstractions;
 
 namespace Domain.CQRS.Abstractions;
 
-internal interface IGetTransactionQueryHandler : IGetEntityQuery<Transaction, IGetTransactionParameter, int>
-{
+public interface IAddOrUpdateTransactionCommand : 
+	IAddEntityCommand<Transaction, IAddTransactionParameter>
+{ 
 }

@@ -32,15 +32,15 @@ internal class TransactionManager : ITransactionManager
 						(parameter) => _scope.Resolve<IExitCommand>().Handle(parameter as ExitAppParameter)
 						) },
 					{ "get",   
-						new (() => new GetTransactionParameter(FetchValue<int>("Введите id", int.TryParse)), 
-						async (parameter) => outputPrinter.WriteLine(JsonSerializer.Serialize(await _scope.Resolve<IGetTransactionQueryHandler>().GetAsync(parameter as IGetTransactionParameter))))
+						new (() => new QueryTransactionParameter(FetchValue<int>("Введите id", int.TryParse)), 
+						async (parameter) => outputPrinter.WriteLine(JsonSerializer.Serialize(await _scope.Resolve<ITransactionQuery>().GetAsync(parameter as IQueryTransactionParameter))))
 					},
 					{ "add",  
 						new (() => new AddTransactionParameter(new Transaction(
 							FetchValue<int>("Введите id", int.TryParse),
 							FetchValue<DateTime>("Введите дату", DateTime.TryParse),
 							FetchValue<int>("Введите сумму", int.TryParse))),
-						(parameter) => _scope.Resolve<IAddOrUpdateTransactionCommandHandler>().Handle(parameter as IAddTransactionParameter))
+						(parameter) => _scope.Resolve<IAddOrUpdateTransactionCommand>().Handle(parameter as IAddTransactionParameter))
 					}
 				};
 	}
