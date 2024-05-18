@@ -3,6 +3,7 @@ using Domain;
 using Domain.Abstractions;
 using Domain.Models;
 using FluentAssertions;
+using Generic.Enums;
 using InMemoryStorage;
 using System.Text.Json;
 using Tests.Helpers;
@@ -15,7 +16,7 @@ public class TransactionManagerUnitTests
 	public async void Add_Transaction_Successfully()
 	{
 		// Arrange
-		var container = ConfigureServices();
+		var container = ConfigureServices(EntityAlreadyExistsBehavior.PropagateException, EnityNotFoundBehavior.PropagateException);
 		var repository = container.Resolve<ITransactionRepository>();
 		var transactionManager = container.Resolve<ITransactionManager>();
 		var inputFetcher = container.Resolve<IInputFetcher>() as MockInputFetcher;
@@ -39,7 +40,7 @@ public class TransactionManagerUnitTests
 	public async void Get_Transaction_Successfully()
 	{
 		// Arrange
-		var container = ConfigureServices();
+		var container = ConfigureServices(EntityAlreadyExistsBehavior.PropagateException, EnityNotFoundBehavior.PropagateException);
 		var repository = container.Resolve<ITransactionRepository>();
 		var transactionManager = container.Resolve<ITransactionManager>();
 		var inputFetcher = container.Resolve<IInputFetcher>() as MockInputFetcher;
@@ -63,13 +64,12 @@ public class TransactionManagerUnitTests
 		deserializedTransAction.Amount.Should().Be(addingTransaction.Amount);
 	}
 
-	private static IContainer ConfigureServices()
+	private static IContainer ConfigureServices(EntityAlreadyExistsBehavior alreadyExistsBehavior, EnityNotFoundBehavior notFoundBehavior)
 	{
-		var builder = new ContainerBuilder().AddDomain().AddInMemoryStorage();
+		var builder = new ContainerBuilder().AddDomain(alreadyExistsBehavior, notFoundBehavior).AddInMemoryStorage();
 		builder.RegisterType<MockInputFetcher>().As<IInputFetcher>().SingleInstance();
 		builder.RegisterType<MockOutputPrinter>().As<IOutputPrinter>().SingleInstance();
 
 		return builder.Build();
 	}
-
 }
