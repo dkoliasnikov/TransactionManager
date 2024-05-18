@@ -2,6 +2,6 @@
 
 namespace Domain.CQRS.Params.Abstractions;
 
-public interface IExitAppParameter : IParameter
+internal interface IExitAppParameter : IParameter
 {
 }

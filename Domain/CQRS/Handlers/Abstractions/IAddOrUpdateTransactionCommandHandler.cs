@@ -4,7 +4,7 @@ using Generic.CQRS.Abstractions;
 
 namespace Domain.CQRS.Abstractions;
 
-public interface IAddOrUpdateTransactionCommandHandler : 
+internal interface IAddOrUpdateTransactionCommandHandler : 
 	IAddEntityCommand<Transaction, IAddTransactionParameter>
 { 
 }

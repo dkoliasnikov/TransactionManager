@@ -4,6 +4,6 @@ using Generic.CQRS.Abstractions;
 
 namespace Domain.CQRS.Abstractions;
 
-public interface IGetTransactionQueryHandler : IGetEntityQuery<Transaction, IGetTransactionParameter, int>
+internal interface IGetTransactionQueryHandler : IGetEntityQuery<Transaction, IGetTransactionParameter, int>
 {
 }
